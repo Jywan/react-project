@@ -1,12 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import NavigationItem from "./NavigationItem";
 
 export default function NavigationBar(): JSX.Element {
     return (
-        <div>
-            <Link to="/">메인</Link>
-            <Link to="/write">글 쓰기</Link>
-            <Link to="/profile">내 정보</Link>
+        <div className="flex flex-row justify-center items-center">
+            <NavigationItem to="/">메인</NavigationItem>
+            <NavigationItem to="/write">글 쓰기</NavigationItem>
+            <NavigationItem to="/profile">내 정보</NavigationItem>
         </div>
     )
 }

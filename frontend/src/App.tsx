@@ -7,8 +7,9 @@ import ProfilePage from "./pages/ProfilePage"
 import NavigationBar from "./components/NavigationBar"
 
 function App() {
-  return ( 
-  <div>
+  return (
+  <div className="text-center">
+    <NavigationBar />
     <Routes>
       <Route path="/" element= {<MainPage/>}/>
       <Route path="/write" element= {<WritePage/>}/>
@@ -16,7 +17,6 @@ function App() {
       <Route path="/login" element= {<LoginPage/>}/>
       <Route path="/profile" element= {<ProfilePage/>}/>
     </Routes>
-    <NavigationBar />
   </div>
   )
 }
