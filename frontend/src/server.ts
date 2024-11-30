@@ -1,8 +1,10 @@
 /* 테스트용 가짜 서버 */
 
-import { Comment, Post, PromiseRpc, User } from "./rpcgen";
+import { Comment, IRpc, Post, RpcFunctionRequest, RpcFunctionResponse, User } from "./rpcgen";
 
-const server: PromiseRpc = {
+const server: {
+    [K in keyof IRpc]: (arg: RpcFunctionRequest<K>) => Promise<RpcFunctionResponse<K>>
+} = {
     createPost: async (req) => {
         posts.push({
             body: req.body,
@@ -42,12 +44,12 @@ const server: PromiseRpc = {
             })
         })
 
-        return {posts:posts.filter((p) => p.author.id === user.id), comments}
+        return { posts: posts.filter((p) => p.author.id === user.id), comments }
     },
     updateProfile: async (req) => {
         user.name = req.name
         return {}
-     },
+    },
 }
 
 export default server

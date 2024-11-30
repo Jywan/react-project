@@ -83,17 +83,23 @@ type PromiseReturn<F extends AnyFunction> = F extends (
     => infer R
     ? (...args: A) => Promise<R>
     : never;
-/*
-    TEST
-*/
-// type t1 = PromiseReturn<string>;
-type t2 = PromiseReturn<() => string>
-type t3 = PromiseReturn<(a: number, b:string, c: boolean) => string>;
 
 export type PromiseRpc = {
     [k in keyof IRpc]: PromiseReturn<IRpc[k]>;
 };
 
-const r = 0 as any as PromiseRpc;
+export type RpcFunctionRequest<T extends keyof IRpc> = Parameters<IRpc[T]> [0];
+export type RpcFunctionResponse<T extends keyof IRpc> = ReturnType<IRpc[T]>;
 
-const res = r.createPost({ body: "hello" });
+
+export type RpcRequest<T extends keyof IRpc> = {
+    name: T;
+    request: RpcFunctionRequest<T>;
+}
+
+export type RpcResponse<T extends keyof IRpc> = {
+    error?: RpcError;
+    response?: RpcFunctionResponse<T>;
+}
+
+export type RpcError = string;
