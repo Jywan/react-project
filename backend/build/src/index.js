@@ -9,9 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const queries_1 = require("./db/queries");
+const queries_1 = require("../db/queries");
 function f() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(yield (0, queries_1.selectUser)(1));
     });
 }
+f();
