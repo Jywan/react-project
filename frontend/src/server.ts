@@ -60,16 +60,18 @@ const posts: Post[] = [
     { id: 0, body: "테스트 내용1", author: user, timestamp: Date.now() - 2345432, comments: [] },
     {
         id: 1,
-        author: user2,
         body: "테스트 내용2",
+        author: user2,
         timestamp: Date.now() - 21331231,
-        comments: [{
-            body: "테스트 댓글1",
-            id: 2,
-            author: user,
-            timestamp: Date.now()
-        }]
-    }
+        comments: [{ body: "댓글1", author: user2, timestamp: Date.now(), id: 4 }]
+    },
+    {
+        id: 2,
+        body: "테스트 내용3",
+        author: user2,
+        timestamp: Date.now() - 21331231,
+        comments: [{ body: "댓글2", author: user, timestamp: Date.now(), id: 3 }]
+    },
 ]
 
 function findPost(postId: number): Post {
