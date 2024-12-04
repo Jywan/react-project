@@ -15,7 +15,7 @@ exports.insertCommnet = insertCommnet;
 exports.selectUser = selectUser;
 exports.selectPost = selectPost;
 exports.selectRandomPost = selectRandomPost;
-exports.selecPostsByAuthor = selecPostsByAuthor;
+exports.selectPostsByAuthor = selectPostsByAuthor;
 exports.selectCommentsByAuthor = selectCommentsByAuthor;
 exports.selectCommentsByPost = selectCommentsByPost;
 exports.updateUser = updateUser;
@@ -49,7 +49,7 @@ function selectRandomPost() {
         return posts[Math.floor(Math.random() * posts.length)];
     });
 }
-function selecPostsByAuthor(authorId) {
+function selectPostsByAuthor(authorId) {
     return __awaiter(this, void 0, void 0, function* () {
         return posts.filter((v) => v.authorId === authorId);
     });

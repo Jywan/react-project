@@ -13,6 +13,11 @@ const queries_1 = require("../db/queries");
 function f() {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(yield (0, queries_1.selectUser)(1));
+        console.log("before");
+        console.log(yield (0, queries_1.selectPostsByAuthor)(1));
+        yield (0, queries_1.insertPost)("새 글", 1);
+        console.log("after");
+        console.log(yield (0, queries_1.selectPostsByAuthor)(1));
     });
 }
 f();
