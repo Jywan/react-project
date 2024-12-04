@@ -8,11 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const server_1 = require("./server");
-function f() {
+exports.listen = listen;
+const express_1 = __importDefault(require("express"));
+const app = (0, express_1.default)();
+app.use(express_1.default.json());
+function listen(hostname, port) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield (0, server_1.listen)("127.0.0.1", 8080);
+        return new Promise((resolve) => {
+            app.listen(port, hostname, resolve);
+        });
     });
 }
-f();
