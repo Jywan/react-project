@@ -9,65 +9,46 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.selectCommentsByPost = exports.selectCommentsByAuthor = exports.selectPostsByAuthor = exports.selectRandomPost = exports.selectPost = exports.selectUser = void 0;
 exports.insertUser = insertUser;
 exports.insertPost = insertPost;
-exports.insertCommnet = insertCommnet;
-exports.selectUser = selectUser;
-exports.selectPost = selectPost;
-exports.selectRandomPost = selectRandomPost;
-exports.selectPostsByAuthor = selectPostsByAuthor;
-exports.selectCommentsByAuthor = selectCommentsByAuthor;
-exports.selectCommentsByPost = selectCommentsByPost;
+exports.insertComment = insertComment;
 exports.updateUser = updateUser;
+const connection_1 = require("./connection");
+const rpcgen_1 = require("../src/rpcgen");
+const error_1 = require("../src/utils/error");
+const queries_1 = require("../src/utils/queries");
+const ml = (v, min) => (0, error_1.mustLong)(v, rpcgen_1.RpcError.Short, min);
 function insertUser(name) {
     return __awaiter(this, void 0, void 0, function* () {
-        users.push({ id: users.length, name });
+        yield (0, connection_1.conn)().query("insert into `users` (`name`) values(?)", [ml(name)]);
     });
 }
 function insertPost(body, authorId) {
     return __awaiter(this, void 0, void 0, function* () {
-        posts.push({ id: posts.length, body, authorId, timestamp: Date.now() });
+        yield (0, connection_1.conn)().query("insert into `posts` (`body`, `authorId`, timestamp) values(?, ?, ?)", [body, authorId, Date.now()]);
     });
 }
-function insertCommnet(body, authorId, postId) {
+function insertComment(body, authorId, postId) {
     return __awaiter(this, void 0, void 0, function* () {
-        comments.push({ id: comments.length, postId, body, authorId, timestamp: Date.now() });
+        yield (0, connection_1.conn)().query("insert into `comments` (`body`, `authorId`, `postId`, `timestamp`)", [body, authorId, postId, Date.now()]);
     });
 }
-function selectUser(id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return findyById(id, users);
-    });
-}
-function selectPost(id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return findyById(id, posts);
-    });
-}
-function selectRandomPost() {
-    return __awaiter(this, void 0, void 0, function* () {
-        return posts[Math.floor(Math.random() * posts.length)];
-    });
-}
-function selectPostsByAuthor(authorId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return posts.filter((v) => v.authorId === authorId);
-    });
-}
-function selectCommentsByAuthor(authorId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return comments.filter((v) => v.authorId === authorId);
-    });
-}
-function selectCommentsByPost(postId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return comments.filter((v) => v.postId === postId);
-    });
-}
+const selectUser = (id) => (0, queries_1.selectOne)("select * from `users` where `id` = ?", [id], rpcgen_1.RpcError.NoUser);
+exports.selectUser = selectUser;
+const selectPost = (id) => (0, queries_1.selectOne)("select * from `posts` where `id` = ?", [id], rpcgen_1.RpcError.NoPost);
+exports.selectPost = selectPost;
+const selectRandomPost = () => (0, queries_1.selectOne)("select * from `posts` order by rand() limit 1", undefined, rpcgen_1.RpcError.NoPost);
+exports.selectRandomPost = selectRandomPost;
+const selectPostsByAuthor = (authorId) => (0, queries_1.select)("select * from `posts` where `authorId` = ?", [authorId]);
+exports.selectPostsByAuthor = selectPostsByAuthor;
+const selectCommentsByAuthor = (authorId) => (0, queries_1.select)("select * from `comments` where `authorId` = ?", [authorId]);
+exports.selectCommentsByAuthor = selectCommentsByAuthor;
+const selectCommentsByPost = (postId) => (0, queries_1.select)("select * from `comments` where `postId` = ?", [postId]);
+exports.selectCommentsByPost = selectCommentsByPost;
 function updateUser(id, name) {
     return __awaiter(this, void 0, void 0, function* () {
-        const user = findyById(id, users);
-        user.name = name;
+        yield (0, connection_1.conn)().query("update `users` set `name` = ? where `id` = ?", [ml(name), id]);
     });
 }
 function findyById(id, arr) {
@@ -77,18 +58,3 @@ function findyById(id, arr) {
     }
     return r;
 }
-const users = [
-    { id: 0, name: "김XX" },
-    { id: 1, name: "이XX" }
-];
-const posts = [
-    { id: 0, authorId: 0, body: "첫 번째 글입니다.", timestamp: Date.now() - 1231233 },
-    { id: 1, authorId: 1, body: "두 번째 글입니다.", timestamp: Date.now() - 1231233 },
-    { id: 2, authorId: 1, body: "세 번째 글입니다.", timestamp: Date.now() - 1231233 },
-    { id: 3, authorId: 0, body: "네 번째 글입니다.", timestamp: Date.now() - 1231233 }
-];
-const comments = [
-    { id: 0, authorId: 0, postId: 0, body: "첫 번째 글의 첫 번째 댓글", timestamp: Date.now() + 1231233 },
-    { id: 1, authorId: 1, postId: 0, body: "첫 번째 글의 두 번째 댓글", timestamp: Date.now() + 12312334 },
-    { id: 2, authorId: 0, postId: 2, body: "3번글의 댓글", timestamp: Date.now() + 12312335 }
-];

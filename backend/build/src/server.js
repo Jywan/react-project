@@ -14,12 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.listen = listen;
 const express_1 = __importDefault(require("express"));
+const rpc_1 = __importDefault(require("./middlewares/rpc"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
+app.post("/rpc", rpc_1.default);
 function listen(hostname, port) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve) => {
-            app.listen(port, hostname, resolve);
+            app.listen(port, hostname, () => {
+                console.log("listen: ", hostname, port);
+                resolve();
+            });
         });
     });
 }

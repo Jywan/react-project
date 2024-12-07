@@ -1,36 +1,54 @@
 import { CommentModel, PostModel, UserModel } from "./models";
+import { conn } from "./connection"
+import { RpcError } from "../src/rpcgen";
+import { mustLong } from "../src/utils/error";
+import { select, selectOne } from "../src/utils/queries"
+
+
+const ml = (v: string, min?: number) => mustLong(v, RpcError.Short, min)
 
 export async function insertUser(name: string): Promise<void> {
-    users.push({ id: users.length, name })
-}
-export async function insertPost(body: string, authorId: number): Promise<void> {
-    posts.push({ id: posts.length, body, authorId, timestamp: Date.now() })
-}
-export async function insertCommnet(body: string, authorId: number, postId: number): Promise<void> {
-    comments.push({ id: comments.length, postId, body, authorId, timestamp: Date.now() })
+    await conn().query("insert into `users` (`name`) values(?)", [ml(name)])
 }
 
-export async function selectUser(id: number): Promise<UserModel> {
-    return findyById(id, users)
+export async function insertPost(body: string, authorId: number): Promise<void> {
+    await conn().query(
+        "insert into `posts` (`body`, `authorId`, timestamp) values(?, ?, ?)",
+        [body, authorId, Date.now()]
+    )
 }
-export async function selectPost(id: number): Promise<PostModel> {
-    return findyById(id, posts)
+
+export async function insertComment(body: string, authorId: number, postId: number): Promise<void> {
+    await conn().query(
+        "insert into `comments` (`body`, `authorId`, `postId`, `timestamp`)",
+        [body, authorId, postId, Date.now()]
+    )
 }
-export async function selectRandomPost(): Promise<PostModel> {
-    return posts[Math.floor(Math.random() * posts.length)]
-}
-export async function selectPostsByAuthor(authorId: number): Promise<PostModel[]> {
-    return posts.filter((v) => v.authorId === authorId)
-}
-export async function selectCommentsByAuthor(authorId: number): Promise<CommentModel[]> {
-    return comments.filter((v) => v.authorId === authorId)
-}
-export async function selectCommentsByPost(postId: number): Promise<CommentModel[]> {
-    return comments.filter((v) => v.postId === postId)
-}
-export async function updateUser(id: number, name: string): Promise<void> { 
-    const user = findyById(id, users)
-    user.name = name
+
+export const selectUser = (id: number): Promise<UserModel> =>
+    selectOne("select * from `users` where `id` = ?", [id], RpcError.NoUser)
+
+
+export const selectPost = (id: number): Promise<PostModel> =>
+    selectOne("select * from `posts` where `id` = ?", [id], RpcError.NoPost)
+
+export const selectRandomPost = (): Promise<PostModel> =>
+    selectOne("select * from `posts` order by rand() limit 1", undefined, RpcError.NoPost)
+
+export const selectPostsByAuthor = (authorId: number): Promise<PostModel[]> =>
+    select("select * from `posts` where `authorId` = ?", [authorId])
+
+export const selectCommentsByAuthor = (authorId: number): Promise<CommentModel[]> =>
+    select("select * from `comments` where `authorId` = ?", [authorId])
+
+export const selectCommentsByPost = (postId: number): Promise<CommentModel[]> =>
+    select("select * from `comments` where `postId` = ?", [postId])
+
+export async function updateUser(id: number, name: string): Promise<void> {
+    await conn().query(
+        "update `users` set `name` = ? where `id` = ?",
+        [ml(name), id]
+    )
 }
 
 function findyById<T extends { id: number }>(id: number, arr: T[]): T {
@@ -40,22 +58,3 @@ function findyById<T extends { id: number }>(id: number, arr: T[]): T {
     }
     return r
 }
-
-
-const users: UserModel[] = [
-    { id: 0, name: "김XX" },
-    { id: 1, name: "이XX" }
-]
-
-const posts: PostModel[] = [
-    { id: 0, authorId: 0, body: "첫 번째 글입니다.", timestamp: Date.now() - 1231233 },
-    { id: 1, authorId: 1, body: "두 번째 글입니다.", timestamp: Date.now() - 1231233 },
-    { id: 2, authorId: 1, body: "세 번째 글입니다.", timestamp: Date.now() - 1231233 },
-    { id: 3, authorId: 0, body: "네 번째 글입니다.", timestamp: Date.now() - 1231233 }
-]
-
-const comments: CommentModel[] = [
-    { id: 0, authorId: 0, postId: 0, body: "첫 번째 글의 첫 번째 댓글", timestamp: Date.now() + 1231233 },
-    { id: 1, authorId: 1, postId: 0, body: "첫 번째 글의 두 번째 댓글", timestamp: Date.now() + 12312334 },
-    { id: 2, authorId: 0, postId: 2, body: "3번글의 댓글", timestamp: Date.now() + 12312335 }
-]

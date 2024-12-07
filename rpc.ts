@@ -102,4 +102,10 @@ export type RpcResponse<T extends keyof IRpc> = {
     response?: RpcFunctionResponse<T>;
 }
 
-export type RpcError = string;
+export enum RpcError {
+    Other,
+    WrongRequest,
+    NoUser,
+    NoPost,
+    Short,
+}

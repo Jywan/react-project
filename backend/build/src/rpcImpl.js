@@ -11,14 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const queries_1 = require("../db/queries");
 const convert_1 = require("../db/convert");
-const userId = 0;
+const userId = 1;
 const rpcImpl = {
     createPost: (req) => __awaiter(void 0, void 0, void 0, function* () {
         yield (0, queries_1.insertPost)(req.body, userId);
         return {};
     }),
     createComment: (req) => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, queries_1.insertCommnet)(req.body, userId, req.postId);
+        yield (0, queries_1.insertComment)(req.body, userId, req.postId);
         return {};
     }),
     readPost: (req) => __awaiter(void 0, void 0, void 0, function* () {
@@ -33,7 +33,7 @@ const rpcImpl = {
     readPreview: (req) => __awaiter(void 0, void 0, void 0, function* () {
         return {
             comments: yield (0, convert_1.toComments)(yield (0, queries_1.selectCommentsByAuthor)(userId)),
-            posts: yield (0, convert_1.toPosts)(yield (0, queries_1.selectPostsByAuthor)(userId))
+            posts: yield (0, convert_1.toPosts)(yield (0, queries_1.selectPostsByAuthor)(userId)),
         };
     }),
     updateProfile: (req) => __awaiter(void 0, void 0, void 0, function* () {
