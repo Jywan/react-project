@@ -9,19 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.selectCommentsByPost = exports.selectCommentsByAuthor = exports.selectPostsByAuthor = exports.selectRandomPost = exports.selectPost = exports.selectUser = void 0;
+exports.selectUserByUniqueId = exports.selectCommentsByPost = exports.selectCommentsByAuthor = exports.selectPostsByAuthor = exports.selectRandomPost = exports.selectPost = exports.selectUser = void 0;
 exports.insertUser = insertUser;
 exports.insertPost = insertPost;
 exports.insertComment = insertComment;
 exports.updateUser = updateUser;
+exports.selectOrInsertUser = selectOrInsertUser;
 const connection_1 = require("./connection");
-const rpcgen_1 = require("../src/rpcgen");
-const error_1 = require("../src/utils/error");
-const queries_1 = require("../src/utils/queries");
+const rpcgen_1 = require("../../src/rpcgen");
+const error_1 = require("../../src/utils/error");
+const queries_1 = require("../../src/utils/queries");
 const ml = (v, min) => (0, error_1.mustLong)(v, rpcgen_1.RpcError.Short, min);
-function insertUser(name) {
+function insertUser(name, provider, uniqueId) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield (0, connection_1.conn)().query("insert into `users` (`name`) values(?)", [ml(name)]);
+        yield (0, connection_1.conn)().query("insert into `users` (`name`, `provider`, `uniqueId`) values(?, ?, ?)", [ml(name), provider, uniqueId]);
     });
 }
 function insertPost(body, authorId) {
@@ -49,6 +50,22 @@ exports.selectCommentsByPost = selectCommentsByPost;
 function updateUser(id, name) {
     return __awaiter(this, void 0, void 0, function* () {
         yield (0, connection_1.conn)().query("update `users` set `name` = ? where `id` = ?", [ml(name), id]);
+    });
+}
+const selectUserByUniqueId = (provider, uniqueId) => (0, queries_1.selectOne)("select * from `users` where `provider` = ? and `uniqueId` = ?", [provider, uniqueId], rpcgen_1.RpcError.NoUser);
+exports.selectUserByUniqueId = selectUserByUniqueId;
+function selectOrInsertUser(name, provider, uniqueId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            return yield (0, exports.selectUserByUniqueId)(provider, uniqueId);
+        }
+        catch (e) {
+            if (e === rpcgen_1.RpcError.NoUser) {
+                yield insertUser(name, provider, uniqueId);
+                return (0, exports.selectUserByUniqueId)(provider, uniqueId);
+            }
+            throw e;
+        }
     });
 }
 function findyById(id, arr) {

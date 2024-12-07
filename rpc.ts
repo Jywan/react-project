@@ -25,13 +25,13 @@ export interface Comment {
 export interface CreatePostRequest {
     body: string
 }
-export interface CreatePostResponse {}
+export interface CreatePostResponse { }
 
 export interface CreateCommentRequest {
     postId: number;
     body: string;
 }
-export interface CreateCommentResponse {}
+export interface CreateCommentResponse { }
 
 export interface ReadPostRequest {
     postId: number;
@@ -40,7 +40,7 @@ export interface ReadPostResponse {
     post: Post;
 }
 
-export interface ReadRandomPostRequest {}
+export interface ReadRandomPostRequest { }
 export interface ReadRandomPostResponse {
     post: Post;
 }
@@ -48,9 +48,9 @@ export interface ReadRandomPostResponse {
 export interface UpdateProfileRequest {
     name: string;
 }
-export interface UpdateProfileResponse {}
+export interface UpdateProfileResponse { }
 
-export interface ReadProfileRequest {}
+export interface ReadProfileRequest { }
 export interface ReadProfileResponse {
     user: User;
 }
@@ -61,7 +61,7 @@ export interface Preview {
     timestamp: number;
 }
 
-export interface ReadPreviewRequest {}
+export interface ReadPreviewRequest { }
 export interface ReadPreviewResponse {
     posts: Preview[]
     comments: Preview[]
@@ -69,12 +69,13 @@ export interface ReadPreviewResponse {
 
 export interface IRpc {
     createPost: (req: CreatePostRequest) => CreatePostResponse;
-    createComment: (req:CreateCommentRequest)=>CreateCommentResponse;
-    readPost: (req:ReadPostRequest)=>ReadPostResponse;
-    readRandomPost: (req:ReadRandomPostRequest)=>ReadRandomPostResponse;
-    updateProfile: (req:UpdateProfileRequest)=>UpdateProfileResponse
-    readProfile: (req:ReadProfileRequest)=>ReadProfileResponse;
-    readPreview: (req:ReadPreviewRequest)=>ReadPreviewResponse;
+    createComment: (req: CreateCommentRequest) => CreateCommentResponse;
+    readPost: (req: ReadPostRequest) => ReadPostResponse;
+    readRandomPost: (req: ReadRandomPostRequest) => ReadRandomPostResponse;
+    updateProfile: (req: UpdateProfileRequest) => UpdateProfileResponse
+    readProfile: (req: ReadProfileRequest) => ReadProfileResponse;
+    readPreview: (req: ReadPreviewRequest) => ReadPreviewResponse;
+    readOAuth2Url: (req: ReadOAuth2UrlRequest) => ReadOAuth2UrlResponse;
 }
 
 type AnyFunction = (...args: any) => any
@@ -88,7 +89,7 @@ export type PromiseRpc = {
     [k in keyof IRpc]: PromiseReturn<IRpc[k]>;
 };
 
-export type RpcFunctionRequest<T extends keyof IRpc> = Parameters<IRpc[T]> [0];
+export type RpcFunctionRequest<T extends keyof IRpc> = Parameters<IRpc[T]>[0];
 export type RpcFunctionResponse<T extends keyof IRpc> = ReturnType<IRpc[T]>;
 
 
@@ -108,4 +109,16 @@ export enum RpcError {
     NoUser,
     NoPost,
     Short,
+}
+
+export enum OAuth2Provider {
+    Kakao,
+}
+
+export interface ReadOAuth2UrlRequest {
+    provider: OAuth2Provider;
+}
+
+export interface ReadOAuth2UrlResponse {
+    url: string;
 }

@@ -1,5 +1,5 @@
 import { RowDataPacket } from "mysql2"
-import { conn } from "../../db/connection"
+import { conn } from "../db/connection"
 import { mustOne } from "./error"
 
 export async function select<T>(sql: string, value: any): Promise<T[]> {

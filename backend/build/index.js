@@ -9,9 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const queries_1 = require("./db/queries");
+const server_1 = require("./server");
+const connection_1 = require("./db/connection");
 function f() {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(yield (0, queries_1.selectUser)(1));
+        yield (0, server_1.listen)("127.0.0.1", 8080);
+        yield (0, connection_1.initDB)("localhost", "dbdb", "useruser", "1234");
     });
 }
+f();

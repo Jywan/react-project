@@ -8,8 +8,9 @@ import {
   selectRandomPost,
   selectUser,
   updateUser,
-} from "../db/queries"
-import { toComments, toPost, toPosts, toUser } from "../db/convert"
+} from "./db/queries"
+import { toComments, toPost, toPosts, toUser } from "./db/convert"
+import { getAuthUrl } from "./utils/oauth2"
 
 const userId = 1
 
@@ -41,6 +42,10 @@ const rpcImpl: PromiseRpc = {
     await updateUser(userId, req.name)
     return {}
   },
+  readOAuth2Url: async (req) => {
+    const url = getAuthUrl(req.provider)
+    return { url }
+  }
 }
 
 export default rpcImpl

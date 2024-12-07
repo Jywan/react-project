@@ -19,6 +19,9 @@ create table if not exists "comments" (
     "authorId" int,
     "body" varchar(255),
     "timestamp" bigint
-)
+);
+
+alter table "users" add column if not exists "provider" int;
+alter table "users" add column if not exists "uniqueId" varchar(255)
 `.replace(/"/g, "`");
 exports.default = initQueries;
