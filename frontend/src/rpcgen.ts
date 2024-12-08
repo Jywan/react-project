@@ -55,6 +55,9 @@ export interface ReadProfileResponse {
     user: User;
 }
 
+export interface DeleteSessionRequest {}
+export interface DeleteSessionResponse {}
+
 export interface Preview {
     id: number;
     body: string;
@@ -76,6 +79,7 @@ export interface IRpc {
     readProfile: (req: ReadProfileRequest) => ReadProfileResponse;
     readPreview: (req: ReadPreviewRequest) => ReadPreviewResponse;
     readOAuth2Url: (req: ReadOAuth2UrlRequest) => ReadOAuth2UrlResponse;
+    deleteSession: (req: DeleteSessionRequest) => DeleteSessionResponse;
 }
 
 type AnyFunction = (...args: any) => any
@@ -109,6 +113,7 @@ export enum RpcError {
     NoUser,
     NoPost,
     Short,
+    NoSession,
 }
 
 export enum OAuth2Provider {

@@ -8,6 +8,7 @@ export default function ProfilePage(): JSX.Element {
     const rpcReadProfile = useRpc("readProfile", {})
     const rpcReadPreview = useRpc("readPreview", {})
     const rpcUpdateProfile = useRpc("updateProfile")
+    const rpcDeleteSession = useRpc("deleteSession")
     const navigate = useNavigateWithSearch()
 
     const [name, setName] = useState("")
@@ -39,6 +40,10 @@ export default function ProfilePage(): JSX.Element {
         navigate("/detail", { id })
     }
 
+    const onLogout = () => {
+        rpcDeleteSession.reqeust({})
+    }
+
     return (
         <div className="flex flex-col items-center">
             <input className="text-xl font-bold text-center" value={user.name} onChange={(e) => { setName(e.target.value) }} />
@@ -62,7 +67,7 @@ export default function ProfilePage(): JSX.Element {
                     )}
                 </div>
             </div>
-            <button className="text-gray-500 font-xs">로그아웃</button>
+            <button className="text-gray-500 font-xs" onClick={onLogout}>로그아웃</button>
         </div>
     )
 }
